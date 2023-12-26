@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Posts</title>
+</head>
+<body>
+  <h1>Новый пост</h1>
+  <label for="titleInput">Заголовок поста</label>
+  <input type="text" id="titleInput" placeholder="Заголовок поста">
+  <br>
+  <label for="bodyInput">Текст поста</label>
+  <textarea id="bodyInput" placeholder="Текст поста"></textarea>
+  <br>
+  <button id="createPostBtn">Создать пост</button>
+  <ul id="postsList"></ul>
+
+  <script>
+    function createPost() {
+      const titleInput = document.getElementById('titleInput');
+      const bodyInput = document.getElementById('bodyInput');
+
+      fetch('https://jsonplaceholder.typicode.com/posts', {
+        method: 'POST',
+        body: JSON.stringify({
+          title: titleInput.value,
+          body: bodyInput.value,
+          userId: 1
+        }),
+        headers: {
+          "Content-Type": "application/json; charset=UTF-8"
+        }
+      })
+      .then(response => response.json())
+      .then(post => {
+        // Добавляем созданный пост в DOM
+        const postsList = document.getElementById('postsList');
+        const postItem = document.createElement('li');
+        postItem.textContent = `${post.title}: ${post.body}`;
+        postsList.appendChild(postItem);
+
+        // Очищаем ввод после добавления поста
+        titleInput.value = '';
+        bodyInput.value = '';
+      })
+      .catch(error => console.error('Ошибка при создании поста:', error));
+    }
+
+    document.getElementById('createPostBtn').addEventListener('click', createPost);
+  </script>
+</body>
+</html>
+
+
+
